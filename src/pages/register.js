@@ -19,9 +19,19 @@ const RegisterPage = () => {
   }
 
   const onFinish = async (values) => {
+    const projectIds = JSON.parse(localStorage.getItem("projectIds"));
+
     setLoading(true);
     const result = await handleRequest("post", "/register", values);
     setLoading(false);
+
+    if (result?.data?.id && projectIds?.length) {
+      await handleRequest("patch", "/projects-update", {
+        userId: result?.data?.id,
+        ids: projectIds,
+      });
+      localStorage.removeItem("projectIds");
+    }
     if (result.success) {
       store.dispatch(setAuth(result?.data?.accessToken));
       setToken(result?.data?.accessToken);

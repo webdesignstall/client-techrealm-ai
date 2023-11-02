@@ -21,12 +21,12 @@ const ProjectForm = () => {
       const storedIds = JSON.parse(localStorage.getItem("projectIds")) || [];
 
       // Add the new ID to the array
-      storedIds.push(result?.data._id);
+      storedIds.push(result?.data?._id);
 
       // Store the updated array back in localStorage
       localStorage.setItem("projectIds", JSON.stringify(storedIds));
     }
-    router.push(`/project/${result?.data?.link}`);
+    router.push(`/dashboard/project/${result?.data?.link}`);
     // router.push(`/dashboard`);
   };
 

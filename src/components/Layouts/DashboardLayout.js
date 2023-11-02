@@ -21,6 +21,7 @@ const DashboardLayout = ({ children }) => {
       <Layout
         style={{
           minHeight: "100vh",
+          background: "#f5f5f5",
         }}
       >
         {/*<SideBarMenu />*/}
@@ -28,7 +29,7 @@ const DashboardLayout = ({ children }) => {
           <Header
             style={{
               padding: "10px 20px",
-              background: colorBgContainer,
+              // background: colorBgContainer,
             }}
           >
             <div
@@ -63,6 +64,7 @@ const DashboardLayout = ({ children }) => {
           <Content
             style={{
               margin: "0 16px",
+              background: "none",
             }}
           >
             <div

@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Card, Flex, Tag, Typography } from "antd";
 import handleRequest from "@/utilities/handleRequest";
 import RootLayout from "@/components/Layouts/RootLayout";
 
-const singleProject = {
+/*const singleProject = {
   projectName: "Project 3",
   prompt:
     "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,\n" +
@@ -32,7 +32,7 @@ const singleProject = {
   link: "link3",
   image:
     "https://elements-cover-images-0.imgix.net/7a410991-3174-4e2a-90ec-ed3ffb16cff0?auto=compress&crop=edges&fit=crop&fm=jpeg&h=630&w=1200&s=76e76c2840f5a18a196f1c4cc808890a",
-};
+};*/
 
 const cardStyle = {
   width: 620,
@@ -45,18 +45,19 @@ const imgStyle = {
 const SingleProject = () => {
   const params = useSearchParams();
   const projectLink = params.get("link");
+  const [project, setProject] = useState({});
   useEffect(() => {
     (async () => {
-      const result = await handleRequest("get", `project/${projectLink}`);
-      console.log(result);
+      const result = await handleRequest("get", `projects/${projectLink}`);
+      setProject(result?.data);
     })();
   }, [projectLink]);
 
   return (
-    <div className="container">
+    <div className="container" style={{ marginTop: "5rem" }}>
       <Card>
         <Flex justify="space-between">
-          <img alt="avatar" src={singleProject.image} style={imgStyle} />
+          <img alt="avatar" src={project?.image} style={imgStyle} />
           <Flex
             vertical
             justify="space-between"
@@ -67,10 +68,10 @@ const SingleProject = () => {
             <Tag
               style={{ display: "inline", fontSize: "18px", padding: "10px" }}
             >
-              {singleProject.projectType}
+              {project?.projectType}
             </Tag>
             <Typography.Title style={{ marginTop: "10px" }} level={3}>
-              {singleProject.projectName}
+              {project?.projectName}
             </Typography.Title>
             <p
               style={{
@@ -79,10 +80,10 @@ const SingleProject = () => {
                 color: "blue",
               }}
             >
-              {singleProject.link}
+              {project?.link}
             </p>
             <p style={{ marginTop: "10px", textAlign: "justify" }}>
-              {singleProject.prompt}
+              {project?.prompt}
             </p>
           </Flex>
         </Flex>

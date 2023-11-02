@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import handleRequest from "@/utilities/handleRequest";
 import ProjectCard from "@/components/Project/ProjectCard";
+import Link from "next/link";
 
 export default function Home() {
   const { currentUser } = useSelector((state) => state.auth);
@@ -43,6 +44,10 @@ export default function Home() {
         </Row>
 
         <div style={{ marginTop: "5rem" }}>
+          <div style={{ margin: "10px 0px" }}>
+            <Link href="/register">Continue To Dashboard</Link>
+          </div>
+
           <Row gutter={[18, 18]}>
             {projects?.map((project) => (
               <Col span={8}>
