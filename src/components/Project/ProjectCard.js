@@ -6,9 +6,9 @@ import _ from "lodash";
 const ProjectCard = ({ project }) => {
   return (
     <>
-      <Link href={`/dashboard/project/${project.link}`}>
+      <Link href={`/dashboard/project/${project?.link}`}>
         <Card>
-          <h3 style={{ marginBottom: "10px" }}>{project.projectName}</h3>
+          <h3 style={{ marginBottom: "10px" }}>{project?.projectName}</h3>
           <p style={{ marginBottom: "10px" }}>
             {_.truncate(project.prompt, {
               length: 150,
@@ -16,7 +16,7 @@ const ProjectCard = ({ project }) => {
             })}
           </p>
           <p>
-            <Tag color="green">{project.projectType}</Tag>
+            <Tag color="green">{project?.projectType}</Tag>
           </p>
         </Card>
       </Link>

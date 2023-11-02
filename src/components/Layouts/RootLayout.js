@@ -1,7 +1,9 @@
-import { Flex, Layout, Space } from "antd";
+import { Button, Flex, Layout, Space } from "antd";
 import Head from "next/head";
 import Link from "next/link";
 import store from "@/redux/store";
+import { logOut } from "@/utilities/sessionHelper";
+import React from "react";
 
 const { Header, Content, Footer } = Layout;
 
@@ -31,7 +33,22 @@ const RootLayout = ({ children }) => {
             <div className="nav-item">
               <Space size="middle">
                 {currentUser ? (
-                  <Link href="/dashboard">Dashboard</Link>
+                  <Space size="middle">
+                    <p>
+                      Welcome To{" "}
+                      <span
+                        style={{
+                          color: "green",
+                          fontSize: "16px",
+                          fontWeight: "bold",
+                        }}
+                      >{`${currentUser?.name?.firstName} ${currentUser?.name?.lastName}`}</span>
+                    </p>
+                    <Link href="/dashboard">
+                      <Button>Dashboard</Button>
+                    </Link>
+                    <Button onClick={logOut}>Log Out</Button>
+                  </Space>
                 ) : (
                   <>
                     <Link href="/login">Login</Link>

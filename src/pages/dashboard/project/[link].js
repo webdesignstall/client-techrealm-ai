@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import DashboardLayout from "@/components/Layouts/DashboardLayout";
 import { Card, Flex, Tag, Typography } from "antd";
+import handleRequest from "@/utilities/handleRequest";
+import RootLayout from "@/components/Layouts/RootLayout";
 
 const singleProject = {
   projectName: "Project 3",
@@ -44,23 +45,16 @@ const imgStyle = {
 const SingleProject = () => {
   const params = useSearchParams();
   const projectLink = params.get("link");
+  useEffect(() => {
+    (async () => {
+      const result = await handleRequest("get", `project/${projectLink}`);
+      console.log(result);
+    })();
+  }, [projectLink]);
 
   return (
     <div className="container">
       <Card>
-        {/*<Flex>
-          <img
-            className="project-image"
-            src={singleProject.image}
-            alt={singleProject.projectName}
-          />
-          <div>
-            <Tag>{singleProject.projectType}</Tag>
-            <h3>{singleProject.projectName}</h3>
-            <h3>{singleProject.link}</h3>
-            <h3>{singleProject.prompt}</h3>
-          </div>
-        </Flex>*/}
         <Flex justify="space-between">
           <img alt="avatar" src={singleProject.image} style={imgStyle} />
           <Flex
@@ -100,5 +94,5 @@ const SingleProject = () => {
 export default SingleProject;
 
 SingleProject.getLayout = function getLayout(page) {
-  return <DashboardLayout>{page}</DashboardLayout>;
+  return <RootLayout>{page}</RootLayout>;
 };

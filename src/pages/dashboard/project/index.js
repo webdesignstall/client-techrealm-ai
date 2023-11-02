@@ -1,7 +1,7 @@
 import React from "react";
-import DashboardLayout from "@/components/Layouts/DashboardLayout";
 import ProjectForm from "@/components/Project/ProjectForm";
 import { Card, Col, Row } from "antd";
+import RootLayout from "@/components/Layouts/RootLayout";
 
 const AddNewProject = () => {
   return (
@@ -20,5 +20,5 @@ const AddNewProject = () => {
 export default AddNewProject;
 
 AddNewProject.getLayout = function getLayout(page) {
-  return <DashboardLayout>{page}</DashboardLayout>;
+  return <RootLayout>{page}</RootLayout>;
 };

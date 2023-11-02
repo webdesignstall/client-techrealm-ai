@@ -1,10 +1,34 @@
 import React, { useState } from "react";
 import { Button, Form, Input, Select } from "antd";
+import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import handleRequest from "@/utilities/handleRequest";
 
 const { Option } = Select;
 const ProjectForm = () => {
   const [loading, setLoading] = useState(false);
-  const onFinish = (value) => {};
+  const router = useRouter();
+  const { currentUser } = useSelector((state) => state.auth);
+
+  const onFinish = async (value) => {
+    if (currentUser) {
+      value.userId = currentUser?.id;
+    }
+    setLoading(true);
+    const result = await handleRequest("post", "projects", value);
+    setLoading(false);
+    if (!currentUser) {
+      const storedIds = JSON.parse(localStorage.getItem("projectIds")) || [];
+
+      // Add the new ID to the array
+      storedIds.push(result?.data._id);
+
+      // Store the updated array back in localStorage
+      localStorage.setItem("projectIds", JSON.stringify(storedIds));
+    }
+    router.push(`/project/${result?.data?.link}`);
+    // router.push(`/dashboard`);
+  };
 
   return (
     <>
