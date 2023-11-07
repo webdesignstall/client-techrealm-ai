@@ -50,7 +50,7 @@ export default function Home() {
 
           <Row gutter={[18, 18]}>
             {projects?.map((project) => (
-              <Col span={8}>
+              <Col key={project?._id} span={8}>
                 <ProjectCard project={project} />
               </Col>
             ))}
