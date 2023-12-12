@@ -67,7 +67,7 @@ export default function Home() {
             toast.success('Account create Successfully')
             setTimeout(() => {
                 setloading(false)
-                // router.push('/login')
+                router.push('/login')
             }, 1000);
         } else {
             setloading(false)
@@ -76,26 +76,18 @@ export default function Home() {
     };
 
     const router = useRouter()
-    const [token, setToken] = React.useState(false)
 
-    React.useEffect(() => {
-        const token = window.localStorage.getItem('token')
-        if (!token) {
-            setToken(true)
-        } else {
-            router.push('/dashboard')
-        }
-    }, [token])
+
 
     return (
-        token && <main className="flex  flex-col max-w-md w-full  gap-4  m-auto px-3">
+        <main className="flex  flex-col max-w-md w-full  gap-4  m-auto px-3">
             <Toaster richColors />
             <div className="">
                 <div>
-                    <h1 className="text-center  text-3xl py-4 font-bold lg:font-semibold text-gray-600">Create a new Account</h1>
+                    <h1 className="text-center  text-3xl py-4 font-bold lg:font-semibold text-gray-600 dark:text-white">Create a new Account</h1>
                 </div>
                 <div>
-                    <Link className="flex text-center rounded-full text-md py-2 font-bold text-orange-600  justify-center lg:text-sm lg:font-semibold hover:bg-gray-100" href='/login'>Already have an account? Login <ArrowRight /></Link>
+                    <Link className="flex text-center rounded-full text-md py-2 font-bold text-orange-600  justify-center lg:text-sm lg:font-semibold hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-900" href='/login'>Already have an account? Login <ArrowRight /></Link>
                 </div>
             </div>
             <div className="py-4 lg:py-0">

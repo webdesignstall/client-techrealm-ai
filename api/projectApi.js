@@ -20,3 +20,13 @@ export const CreateProject = async (values) => {
         return false
     }
 }
+
+
+export const SingleProject = async (link) => {
+    try {
+        const { data } = await instance.get(`${process.env.NEXT_PUBLIC_API_BASE}/projects/${link}`)
+        return data.data
+    } catch (err) {
+        return false
+    }
+}
