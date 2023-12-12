@@ -36,11 +36,11 @@ export default function Dashboard() {
                     <Project />
                 </div>
                 <div>
-                    <div className='flex lg:flex-wrap justify-center lg:justify-start flex-col lg:flex-row items-center'>
+                    <div className='flex lg:flex-wrap justify-center lg:justify-start flex-col lg:flex-row items-center mx-6 lg:mx-0'>
 
                         {
                             data?.map((item: any, index: number) => (
-                                <Card className='w-96 max-h-44 m-3 hover:shadow-md duration-150 cursor-pointer dark:hover:bg-[#071128] dark:shadow-none' key={index}>
+                                <Card className=' sm:w-96 w-full max-h-44 m-3 hover:shadow-md duration-150 cursor-pointer dark:hover:bg-[#071128] dark:shadow-none' key={index}>
                                     {
                                         loading ?
                                             <CardHeader>
@@ -50,7 +50,7 @@ export default function Dashboard() {
                                                 <Skeleton className="w-[300px] h-[20px] rounded-full" />
                                             </CardHeader>
                                             :
-                                            <Link href={`/dashboard/${item.projectName}`}>
+                                            <Link href={`/dashboard/${item.link}`}>
                                                 <CardHeader className='overflow-hidden '>
                                                     <CardTitle className='py-2 capitalize text-gray-500 dark:text-white'>{item?.projectName}</CardTitle>
                                                     <CardContent className='p-0 text-orange-700 dark:text-orange-300'>

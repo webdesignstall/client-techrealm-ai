@@ -33,3 +33,16 @@ export const userSignup = async (values) => {
         return false
     }
 }
+
+
+export const PasswordForget = async (values) => {
+    try {
+        const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE}/resend-otp/${values.email}`, values)
+        console.log(data)
+        return true
+    } catch (err) {
+        return false
+    }
+}
+
+

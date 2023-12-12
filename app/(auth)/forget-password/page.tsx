@@ -2,7 +2,7 @@
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Loader2 } from 'lucide-react';
 import {
     Form,
     FormControl,
@@ -14,34 +14,54 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { PasswordForget } from "@/api/userLoginApi";
+import React from "react";
+import { Toaster, toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 
 const formSchema = z
     .object({
         email: z.string().email(),
-        password: z.string().min(3),
     })
 
 
 export default function ForgetPassword() {
+
+    const router = useRouter()
+    const [loading, setloading] = React.useState(false)
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             email: "",
-            password: "",
         },
     });
 
-    const handleSubmit = (values: z.infer<typeof formSchema>) => {
-        console.log(values);
+    const handleSubmit = async(values: z.infer<typeof formSchema>) => {
+        try{
+         const data = await  PasswordForget(values)
+         if(data === true){
+             toast.success('OTP sent successfully')
+             setTimeout(() => {
+                 router.push('/verification')
+             }, 1000);
+         }else{
+            toast.error('OTP sent invalid')
+         }
+
+        }catch(err){
+            console.log(err);
+        }
     };
 
     return (
         <main className="p-4 py-14 flex lg:flex-col justify-center lg:items-center lg:h-full lg:py:0 lg:p-0">
+            <Toaster richColors />
             <div className="w-full max-w-md">
                 <div className="py-8">
                     <div>
-                        <h1 className="text-center lg:text-3xl text-4xl py-4 font-bold lg:font-semibold text-gray-800">Forget your password</h1>
+                        <h1 className="text-center lg:text-3xl text-4xl py-4 font-bold lg:font-semibold text-gray-800 dark:text-white">Forget your password</h1>
                     </div>
                 </div>
                 <div>
@@ -56,7 +76,7 @@ export default function ForgetPassword() {
                                 render={({ field }) => {
                                     return (
                                         <FormItem>
-                                            <FormLabel className="text-lg lg:text-sm font-semibold text-gray-600">Email address</FormLabel>
+                                            <FormLabel className="text-lg lg:text-sm font-semibold text-gray-600 dark:text-white">Email address</FormLabel>
                                             <FormControl>
                                                 <Input className="py-6"
                                                     placeholder="xyz@example.com"
@@ -70,9 +90,15 @@ export default function ForgetPassword() {
                                 }}
                             />
 
-                            <Button type="submit" className="w-full py-8 text-xl lg:py-6 lg:text-lg">
-                                Sent OTP
-                            </Button>
+                            {
+                                !loading ? <Button type="submit" className="w-full py-8 text-xl lg:py-6 lg:text-lg">
+                                    Send OTP
+                                </Button> :
+                                    <Button disabled className="w-full py-8 text-xl lg:py-6 lg:text-lg">
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        Please wait
+                                    </Button>
+                            }
                         </form>
                     </Form>
                 </div>
