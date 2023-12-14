@@ -1,12 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getToken} from '@/helper/sessionHelper'
+import { getToken } from '@/helper/sessionHelper'
+import { jwtDecoder } from '@/helper/jwtDecode'
 
 interface AuthState {
-  token: string | null;
+  token: any | null;
 }
 
 const initialState: AuthState = {
-  token: getToken() || null,
+  token: jwtDecoder(getToken()) || null,
 };
 
 const authSlice = createSlice({

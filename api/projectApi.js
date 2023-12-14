@@ -14,17 +14,17 @@ export const ProjectList = async (values) => {
 
 export const CreateProject = async (values) => {
     try {
-        const { data } = await instance.post(`${process.env.NEXT_PUBLIC_API_BASE}/projects`, values)
+        const { data } = await instance.post(`/projects`, values)
         return data
     } catch (err) {
-        return false
+        return err.response
     }
 }
 
 
 export const SingleProject = async (link) => {
     try {
-        const { data } = await instance.get(`${process.env.NEXT_PUBLIC_API_BASE}/projects/${link}`)
+        const { data } = await instance.get(`/projects/${link}`)
         return data.data
     } catch (err) {
         return false

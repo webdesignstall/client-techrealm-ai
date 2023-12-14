@@ -2,7 +2,7 @@
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Loader2 } from 'lucide-react';
 import {
     Form,
     FormControl,
@@ -14,37 +14,68 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { OTPverification, PasswordForget } from "@/api/userLoginApi";
+import React from "react";
+import { Toaster, toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { Label } from "@/components/ui/label";
 
 
 const formSchema = z
     .object({
-        email: z.string().email(),
-        password: z.string().min(3),
+        otp: z.string().min(6),
     })
 
 
-export default function ForgetPassword() {
+export default function Verification() {
+
+    const router = useRouter()
+    const [loading, setloading] = React.useState(false)
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: {
-            email: "",
-            password: "",
-        },
+
     });
 
-    const handleSubmit = (values: z.infer<typeof formSchema>) => {
-        console.log(values);
+    const handleSubmit = async (values: z.infer<typeof formSchema>) => {
+        try {
+            setloading(true)
+            const numericOTP = parseInt(values.otp, 10); // Convert the OTP string to a number
+            const data = await OTPverification(numericOTP)
+            console.log(data)
+            if (data.success === true) {
+                toast.success(data.message)
+                setTimeout(() => {
+                    setloading(false)
+                    router.push('/reset-password')
+                }, 1000);
+            } else {
+                setloading(false)
+                toast.error(data.data.message || data.data)
+            }
+
+        } catch (err) {
+            setloading(false)
+            toast.error('OTP verification Failed')
+        }
     };
 
     return (
         <main className="p-4 py-14 flex lg:flex-col justify-center lg:items-center lg:h-full lg:py:0 lg:p-0">
+            <Toaster richColors />
             <div className="w-full max-w-md">
                 <div className="py-8">
                     <div>
-                        <h1 className="text-center lg:text-3xl text-4xl py-4 font-bold lg:font-semibold text-gray-800">Verification your OTP code</h1>
+                        <h1 className="text-center lg:text-3xl text-4xl py-4 font-bold lg:font-semibold text-gray-800 dark:text-white">
+                            Verify your OTP pin code
+                        </h1>
                     </div>
                 </div>
                 <div>
+                    <div>
+                        <Label className="text-lg lg:text-sm font-semibold text-gray-600 dark:text-white">Email Address</Label>
+                        <Input className="my-2 py-6" disabled defaultValue={`${localStorage.getItem('otpEmail')}`} />
+                    </div>
                     <Form {...form}>
                         <form
                             onSubmit={form.handleSubmit(handleSubmit)}
@@ -52,34 +83,16 @@ export default function ForgetPassword() {
                         >
                             <FormField
                                 control={form.control}
-                                name="email"
+                                name="otp"
                                 render={({ field }) => {
                                     return (
                                         <FormItem>
-                                            <FormLabel className="text-lg lg:text-sm font-semibold text-gray-600">Email address</FormLabel>
+                                            <FormLabel className="text-lg lg:text-sm font-semibold text-gray-600 dark:text-white">OTP</FormLabel>
                                             <FormControl>
-                                                <Input className="py-6"
-                                                    placeholder="xyz@example.com"
-                                                    type="email"
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    );
-                                }}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="email"
-                                render={({ field }) => {
-                                    return (
-                                        <FormItem>
-                                            <FormLabel className="text-lg lg:text-sm font-semibold text-gray-600">Email address</FormLabel>
-                                            <FormControl>
-                                                <Input className="py-6"
-                                                    placeholder="xyz@example.com"
-                                                    type="email"
+                                                <Input
+                                                    className="py-6"
+                                                    placeholder="Enter your code"
+                                                    type="number"
                                                     {...field}
                                                 />
                                             </FormControl>
@@ -89,9 +102,15 @@ export default function ForgetPassword() {
                                 }}
                             />
 
-                            <Button type="submit" className="w-full py-8 text-xl lg:py-6 lg:text-lg">
-                                Verify
-                            </Button>
+                            {
+                                !loading ? <Button type="submit" className="w-full py-8 text-xl lg:py-6 lg:text-lg">
+                                    Send OTP
+                                </Button> :
+                                    <Button disabled className="w-full py-8 text-xl lg:py-6 lg:text-lg">
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        Please wait
+                                    </Button>
+                            }
                         </form>
                     </Form>
                 </div>

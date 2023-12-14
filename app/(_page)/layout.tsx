@@ -4,7 +4,9 @@ import { cn } from '@/lib/utils'
 import { Inter as FontSans } from "next/font/google"
 import Header from './components/layout/Header'
 import React from 'react'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+import { AuthCheck } from '@/api/userLoginApi'
+
 
 
 export const fontSans = FontSans({
@@ -19,6 +21,27 @@ export default function DashboardLayout({
 }) {
     const router = useRouter()
     const [token, setToken] = React.useState(false)
+
+    const AuthVerify = async () => {
+        try {
+            const data = await AuthCheck()
+            if (data.ok === true) {
+                console.log(data)
+            }
+            else if (data.response.data.success === false) {
+                localStorage.clear()
+                window.location.href = "/";
+            }
+        } catch (err) {
+            localStorage.clear()
+            window.location.href = "/";
+        }
+    }
+
+    const path = usePathname()
+    React.useEffect(() => {
+        AuthVerify()
+    }, [path])
 
     React.useEffect(() => {
         const token = window.localStorage.getItem('token')

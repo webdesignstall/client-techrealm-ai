@@ -6,6 +6,7 @@ import Project from '../components/Task/Project';
 import { ProjectList } from '@/api/projectApi';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 
 export default function Dashboard() {
@@ -33,7 +34,9 @@ export default function Dashboard() {
         <div className='max-w-7xl m-auto'>
             <div>
                 <div className='flex justify-end items-end py-4'>
-                    <Project />
+                    <Link href='/project'>
+                        <Button>Add Project</Button>
+                    </Link>
                 </div>
                 <div>
                     <div className='flex lg:flex-wrap justify-center lg:justify-start flex-col lg:flex-row items-center mx-6 lg:mx-0'>

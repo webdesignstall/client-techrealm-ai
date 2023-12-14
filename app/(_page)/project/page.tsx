@@ -2,7 +2,17 @@
 
 import React from 'react'
 import { Button } from "@/components/ui/button"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import {
     Form,
     FormControl,
@@ -20,14 +30,12 @@ import {
     SelectContent,
     SelectGroup,
     SelectItem,
+    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
 import { CreateProject } from "@/api/projectApi"
 import { Toaster, toast } from 'sonner'
-import axios from 'axios'
-import { Loader2 } from 'lucide-react'
-
 
 
 const formSchema = z
@@ -38,13 +46,7 @@ const formSchema = z
 
     })
 
-
-
-export default function Homepage() {
-
-    const [loading, setloading] = React.useState(false)
-    const [projects, setProjects] = React.useState([]);
-
+export default function Project() {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -55,27 +57,13 @@ export default function Homepage() {
     });
 
     const handleSubmit = async (values: z.infer<typeof formSchema>) => {
-        setloading(true)
         const data = await CreateProject(values)
-        if (data === true) {
-            setloading(false)
-            form.reset()
-            toast.success('Project create successfully')
+        if (data.success === true) {
+            toast.success(data.message)
         } else {
-            setloading(false)
-            toast.warning('Something went wrong')
+            toast.warning(data.data.message)
         }
     }
-
-    React.useEffect(() => {
-        (async () => {
-            const ids = localStorage.getItem("projectIds");
-            if (ids) {
-                const result = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE}/projects-byids/${ids}`);
-                setProjects(result?.data);
-            }
-        })();
-    })
     return (
         <div className='max-w-xl m-auto my-14 shadow-lg p-8'>
             <Toaster richColors />
@@ -128,11 +116,11 @@ export default function Homepage() {
                         render={({ field }) => {
                             return (
                                 <FormItem>
-                                    <FormLabel className="text-lg lg:text-sm font-semibold text-gray-600 dark:text-gray-300">What type of project do you have?</FormLabel>
+                                    <FormLabel className="text-lg lg:text-sm font-semibold text-gray-600 dark:text-gray-300">Select your project type</FormLabel>
                                     <FormControl>
                                         <Select onValueChange={field.onChange}>
                                             <SelectTrigger className="w-full">
-                                                <SelectValue placeholder="Please select a project type" />
+                                                <SelectValue placeholder="Select a fruit" />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectGroup>
@@ -148,16 +136,9 @@ export default function Homepage() {
                             );
                         }}
                     />
-                    {
-                        !loading ? <Button type="submit" className="w-full py-8 text-xl lg:py-6 lg:text-lg">
-                            Generate now
-                        </Button> :
-                            <Button disabled className="w-full py-8 text-xl lg:py-6 lg:text-lg">
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Please wait
-                            </Button>
-                    }
-
+                    <DialogFooter>
+                        <Button type="submit">Generate now</Button>
+                    </DialogFooter>
                 </form>
             </Form>
         </div>
