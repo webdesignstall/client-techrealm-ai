@@ -2,7 +2,7 @@ import axios from "axios"
 import instance from '@/helper/axiosInstance'
 
 
-export const ProjectList = async (values) => {
+export const ProjectList = async () => {
     try {
         const { data } = await instance.get(`${process.env.NEXT_PUBLIC_API_BASE}/projects`)
         return data
