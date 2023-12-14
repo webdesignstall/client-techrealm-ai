@@ -1,18 +1,16 @@
 import axios from "axios"
 import { store } from "@/redux/store"
 import { setToken } from "@/redux/slice/AuthSlice"
+import instance from '@/helper/axiosInstance'
 
 
 
-
-
-export const AuthCheck = async (values) => {
+export const AuthCheck = async () => {
     try {
-        const data = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE}//auth/auth-check`, values)
-        console.log(data)
-        return true
+        const {data} = await instance.get(`${process.env.NEXT_PUBLIC_API_BASE}/auth/auth-check`,)
+        return data
     } catch (err) {
-        return false
+        return err
     }
 }
 export const userLogin = async (values) => {
@@ -38,10 +36,30 @@ export const userSignup = async (values) => {
 export const PasswordForget = async (values) => {
     try {
         const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE}/resend-otp/${values.email}`, values)
-        console.log(data)
-        return true
+        localStorage.setItem("otpEmail", values.email);
+        return data
     } catch (err) {
-        return false
+        return err.response
+    }
+}
+
+
+export const OTPverification = async (values) => {
+    try {
+        const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE}/otp/${localStorage.getItem('otpEmail')}/${values}`,)
+        localStorage.setItem("verifyOtp", values);
+        return data
+    } catch (err) {
+        return err.response
+    }
+}
+
+export const ResetPassword = async (values) => {
+    try {
+        const { data } = await axios.patch(`${process.env.NEXT_PUBLIC_API_BASE}/passwords`, values)
+        return data
+    } catch (err) {
+        return err.response
     }
 }
 

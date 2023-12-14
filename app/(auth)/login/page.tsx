@@ -48,13 +48,14 @@ export default function Login() {
 
 
     const handleSubmit = async (values: z.infer<typeof formSchema>) => {
+
         setloading(true)
         const data = await userLogin(values)
         if (data === true) {
             toast.success('Login Successfully')
             setTimeout(() => {
                 setloading(false)
-                router.push('/dashboard')
+                window.location.href = "/dashboard";
             }, 1000);
         } else {
             setloading(false)

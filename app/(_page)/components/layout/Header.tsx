@@ -9,9 +9,12 @@ import { useRouter } from 'next/navigation'
 import Mode from './Mode'
 import NavigationMenu from './NavigationMenu'
 import { Tv2 } from 'lucide-react';
+import { useSelector } from "react-redux"
 
 
 export default function Header() {
+
+    const { token } = useSelector((state: any) => state.auth);
 
     const router = useRouter()
 
@@ -32,7 +35,9 @@ export default function Header() {
                 </div>
                 <div className="space-x-4 flex">
                     <div className="pt-2">
-                        <h1>Welcome <span className="font-semibold uppercase">SHAKIL HOSSEN</span></h1>
+                        <h1>Welcome <span className="font-semibold uppercase">
+                            {`${token?.name?.firstName} ${token?.name?.lastName}`}
+                        </span></h1>
                     </div>
                     <Link href='/login'>
                         <Button className="font-semibold" variant='destructive' onClick={handleLogout}>Logout</Button>

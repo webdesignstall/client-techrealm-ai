@@ -38,22 +38,30 @@ export default function ForgetPassword() {
         },
     });
 
-    const handleSubmit = async(values: z.infer<typeof formSchema>) => {
-        try{
-         const data = await  PasswordForget(values)
-         if(data === true){
-             toast.success('OTP sent successfully')
-             setTimeout(() => {
-                 router.push('/verification')
-             }, 1000);
-         }else{
-            toast.error('OTP sent invalid')
-         }
+    const handleSubmit = async (values: z.infer<typeof formSchema>) => {
+        try {
+            setloading(true)
+            const data = await PasswordForget(values)
+            if (data.success === true) {
+                toast.success(data.message)
+                setTimeout(() => {
+                    setloading(false)
+                    router.push('/verification')
+                }, 1000);
+            } else {
+                setloading(false)
+                toast.error(data.data.message || data.data)
+            }
 
-        }catch(err){
-            console.log(err);
+        } catch (err) {
+            setloading(false)
+            toast.error('OTP sent Failed')
         }
     };
+
+    React.useEffect(() => {
+        localStorage.clear()
+    }, [])
 
     return (
         <main className="p-4 py-14 flex lg:flex-col justify-center lg:items-center lg:h-full lg:py:0 lg:p-0">

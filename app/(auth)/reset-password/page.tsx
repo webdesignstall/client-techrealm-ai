@@ -4,8 +4,7 @@ import React from "react";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, Loader2 } from 'lucide-react';
-import axios from 'axios'
+import { Loader2 } from 'lucide-react';
 import {
     Form,
     FormControl,
@@ -16,18 +15,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { useRouter } from 'next/navigation'
-import { userSignup } from "@/api/userLoginApi";
+import { ResetPassword } from "@/api/userLoginApi";
 import { Toaster, toast } from "sonner";
 
 const formSchema = z
     .object({
-        name: z.object({
-            firstName: z.string(),
-            lastName: z.string(),
-        }),
-        email: z.string().email(),
         password: z.string().min(3),
         confirmPassword: z.string(),
     })
@@ -42,18 +35,13 @@ const formSchema = z
     )
 
 
-export default function Signup() {
+export default function ChangePassword() {
 
     const [loading, setloading] = React.useState(false)
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: {
-                firstName: "",
-                lastName: "",
-            },
-            email: "",
             password: "",
             confirmPassword: "",
         },
@@ -61,18 +49,30 @@ export default function Signup() {
 
 
     const handleSubmit = async (values: z.infer<typeof formSchema>) => {
-        setloading(true)
-        const data = await userSignup(values)
-        if (data === true) {
-            toast.success('Account create Successfully')
-            form.reset()
-            setTimeout(() => {
+        try {
+            setloading(true)
+            const data = await ResetPassword(
+                {
+                    password: values.password,
+                    confirmPassword: values.confirmPassword,
+                    email: localStorage.getItem("otpEmail"),
+                    otp: localStorage.getItem("verifyOtp"),
+                }
+            )
+            if (data.success === true) {
+                toast.success(data.message)
+                form.reset()
+                setTimeout(() => {
+                    setloading(false)
+                    router.push('/login')
+                }, 1000);
+            } else {
                 setloading(false)
-                router.push('/login')
-            }, 1000);
-        } else {
+                toast.error(data.data.message)
+            }
+        } catch (err) {
             setloading(false)
-            toast.error('Account create Failed !')
+            toast.error('Paswords reset failed')
         }
     };
 
@@ -85,10 +85,7 @@ export default function Signup() {
             <Toaster richColors />
             <div className="">
                 <div>
-                    <h1 className="text-center  text-3xl py-4 font-bold lg:font-semibold text-gray-600 dark:text-white">Create a new Account</h1>
-                </div>
-                <div>
-                    <Link className="flex text-center rounded-full text-md py-2 font-bold text-orange-600  justify-center lg:text-sm lg:font-semibold hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-900" href='/login'>Already have an account? Login <ArrowRight /></Link>
+                    <h1 className="text-center  text-3xl py-4 font-bold lg:font-semibold text-gray-600 dark:text-white">Create new password</h1>
                 </div>
             </div>
             <div className="py-4 lg:py-0">
@@ -97,63 +94,8 @@ export default function Signup() {
                         onSubmit={form.handleSubmit(handleSubmit)}
                         className=""
                     >
-                        <div className="grid grid-cols-2 gap-4">
-                            <FormField
-                                control={form.control}
-                                name="name.firstName"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="text-lg lg:text-sm">First Name</FormLabel>
-                                        <FormControl>
-                                            <Input className="py-6" placeholder="First Name" {...field} />
-                                        </FormControl>
-
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="name.lastName"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="text-lg lg:text-sm">Last Name</FormLabel>
-                                        <FormControl>
-                                            <Input className="py-6" placeholder="Last Name" {...field} />
-                                        </FormControl>
-
-                                    </FormItem>
-                                )}
-                            />
-
-                        </div>
-
-
-
                         <div className="py-2">
-                            <FormField
-                                control={form.control}
-                                name="email"
-                                render={({ field }) => {
-                                    return (
-                                        <FormItem>
-                                            <FormLabel className="text-lg lg:text-sm">Email address</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    className="py-6"
-                                                    placeholder="Email address"
-                                                    type="email"
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    );
-                                }}
-                            />
-                        </div>
 
-                        <div className="py-2">
                             <FormField
                                 control={form.control}
                                 name="password"
@@ -197,7 +139,7 @@ export default function Signup() {
                         </div>
                         {
                             !loading ? <Button type="submit" className="w-full my-4 py-8 text-xl lg:py-6 lg:text-lg">
-                                Create account
+                                Change Password
                             </Button> :
                                 <Button disabled className="w-full my-4 py-8 text-xl lg:py-6 lg:text-lg">
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

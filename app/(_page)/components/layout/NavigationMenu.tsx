@@ -20,13 +20,17 @@ export default function NavigationMenuDemo() {
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Getting started</NavigationMenuTrigger>
+          <NavigationMenuLink className={`${navigationMenuTriggerStyle()} font-semibold cursor-pointer`}>
+            Overview
+          </NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Components</NavigationMenuTrigger>
+          <NavigationMenuLink className={`${navigationMenuTriggerStyle()} font-semibold cursor-pointer`}>
+            Activity
+          </NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+          <NavigationMenuLink className={`${navigationMenuTriggerStyle()} font-semibold cursor-pointer`}>
             Documentation
           </NavigationMenuLink>
         </NavigationMenuItem>
