@@ -15,7 +15,7 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setToken(state, action: PayloadAction<any>) {
-      state.token = jwtDecoder(action.payload || null);
+      state.token = action.payload;
       localStorage.setItem('token', action.payload);
     },
     clearToken(state) {

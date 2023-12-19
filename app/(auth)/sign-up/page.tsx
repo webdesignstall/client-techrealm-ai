@@ -5,7 +5,6 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, Loader2 } from 'lucide-react';
-import axios from 'axios'
 import {
     Form,
     FormControl,
@@ -18,7 +17,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useRouter } from 'next/navigation'
-import { userSignup } from "@/api/userLoginApi";
 import { Toaster, toast } from "sonner";
 import { HandleRequest } from "@/helper/handleRequest";
 
@@ -73,12 +71,11 @@ export default function Signup() {
                     router.push('/login')
                 }, 1000);
             } else {
-                console.log(data)
                 setloading(false)
-                toast.error(data?.response?.data?.message || data?.message)
+                toast.error(data?.message || data)
             }
         } catch (err: any) {
-            toast.error(err?.response?.data?.message)
+            toast.error(err?.response?.data?.message || err?.message || err)
         }
     };
 

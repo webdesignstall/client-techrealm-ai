@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense } from "react";
+import React from "react";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,8 +17,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { userLogin } from '@/api/userLoginApi'
-import { useRouter } from 'next/navigation'
 import { toast } from "sonner"
 import { HandleRequest } from "@/helper/handleRequest";
 import { store } from "@/redux/store";
@@ -37,8 +35,6 @@ const formSchema = z
 export default function Login() {
 
     const [loading, setloading] = React.useState(false)
-
-    const router = useRouter()
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -62,15 +58,18 @@ export default function Login() {
                 }, 1000);
             } else {
                 setloading(false)
-                toast.error(data?.response?.data?.message || data?.message)
+                toast.error(data?.message || data)
             }
         } catch (err: any) {
             setloading(false)
-            toast.error(err.response.data.message)
+            toast.error(err?.response?.data?.message || err?.message || err)
         }
     };
 
-
+React.useEffect(()=>{
+    localStorage.removeItem('otpEmail');
+    localStorage.removeItem('token');
+}, [])
 
     return (
             <main className="p-4 py-14 flex lg:flex-col justify-center lg:items-center lg:h-full lg:py:0 lg:p-0">

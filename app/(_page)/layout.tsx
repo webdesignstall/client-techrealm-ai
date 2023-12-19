@@ -5,16 +5,16 @@ import { Inter as FontSans } from "next/font/google"
 import Header from './components/layout/Header'
 import React from 'react'
 import { usePathname, useRouter } from 'next/navigation'
-import { AuthCheck } from '@/api/userLoginApi'
 import { store } from '@/redux/store'
 import { clearToken } from '@/redux/slice/AuthSlice'
-
+import { HandleRequest } from '@/helper/handleRequest'
 
 
 export const fontSans = FontSans({
     subsets: ["latin"],
     variable: "--font-sans",
 })
+
 
 export default function DashboardLayout({
     children,
@@ -26,7 +26,7 @@ export default function DashboardLayout({
 
     const AuthVerify = async () => {
         try {
-            const data = await AuthCheck()
+            const data = await HandleRequest("get", '/auth/auth-check')
             if (data.ok === true) {
                 console.log(data)
             }
