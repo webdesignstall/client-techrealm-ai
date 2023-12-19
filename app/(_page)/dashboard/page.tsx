@@ -1,18 +1,15 @@
 "use client"
+
 import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { PlusCircle } from 'lucide-react';
-import Project from '../components/Task/Project';
-import { ProjectList } from '@/api/projectApi';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { HandleRequest } from '@/helper/handleRequest';
-import { store } from '@/redux/store';
-import { setToken } from '@/redux/slice/AuthSlice';
 
 
 export default function Dashboard() {
+
 
     const [data, setData] = React.useState<any>([{}])
     const [loading, setloading] = React.useState(true)
@@ -42,7 +39,7 @@ export default function Dashboard() {
             <div>
                 <div className='flex justify-end items-end py-4'>
                     <Link href='/project'>
-                        <Button>Add Project</Button>
+                        <Button variant='default' className='font-semibold p-6'>Add Project</Button>
                     </Link>
                 </div>
                 <div>

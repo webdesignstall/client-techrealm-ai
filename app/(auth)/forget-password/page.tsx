@@ -2,7 +2,7 @@
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import {
     Form,
     FormControl,
@@ -13,8 +13,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { PasswordForget } from "@/api/userLoginApi";
 import React from "react";
 import { Toaster, toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -53,17 +51,17 @@ export default function ForgetPassword() {
                 }, 1000);
             } else {
                 setloading(false)
-                toast.error(data?.response?.data?.message || data.message)
+                toast.error( data.message || data)
             }
 
         } catch (err: any) {
             setloading(false)
-            toast.error(err?.response?.data?.message)
+            toast.error(err?.response?.data?.message || err?.message || err)
         }
     };
 
     React.useEffect(() => {
-        localStorage.clear()
+        localStorage.removeItem('otpEmail');
     }, [])
 
     return (

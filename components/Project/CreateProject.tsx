@@ -24,7 +24,6 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { Toaster, toast } from 'sonner'
-import axios from 'axios'
 import { Loader2 } from 'lucide-react'
 import { HandleRequest } from '@/helper/handleRequest';
 import { useSelector } from 'react-redux';
@@ -49,7 +48,7 @@ export default function CreateProject() {
     const { token } = useSelector((state: any) => state.auth);
     const router = useRouter()
     const [loading, setloading] = React.useState(false)
-    const [projects, setProjects] = React.useState([]);
+
 
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -77,7 +76,7 @@ export default function CreateProject() {
                     router.push(`/project/${data?.data?.link}?param=${true}`);
                 } else {
                     setloading(false)
-                    toast.error(data?.response?.data?.message)
+                    toast.error(data?.message || data)
                 }
 
             } else {
@@ -93,11 +92,11 @@ export default function CreateProject() {
                     router.push(`/dashboard/${data?.data?.link}?param=${true}`);
                 } else {
                     setloading(false)
-                    toast.error(data?.response?.data?.message)
+                    toast.error(data?.message || data)
                 }
             }
         } catch (err: any) {
-            toast.error(err?.response?.data?.message)
+            toast.error(err?.response?.data?.message || err?.message || err)
         }
     }
 

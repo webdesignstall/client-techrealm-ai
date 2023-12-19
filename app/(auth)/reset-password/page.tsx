@@ -16,8 +16,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from 'next/navigation'
-import { ResetPassword } from "@/api/userLoginApi";
 import { Toaster, toast } from "sonner";
+import { HandleRequest } from "@/helper/handleRequest";
 
 const formSchema = z
     .object({
@@ -51,14 +51,15 @@ export default function ChangePassword() {
     const handleSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
             setloading(true)
-            const data = await ResetPassword(
-                {
-                    password: values.password,
-                    confirmPassword: values.confirmPassword,
-                    email: localStorage.getItem("otpEmail"),
-                    otp: localStorage.getItem("verifyOtp"),
-                }
-            )
+
+            const data = await HandleRequest('post', '/passwords', {
+                password: values.password,
+                confirmPassword: values.confirmPassword,
+                email: localStorage.getItem("otpEmail"),
+                otp: localStorage.getItem("verifyOtp"),
+            })
+
+
             if (data.success === true) {
                 toast.success(data.message)
                 form.reset()
@@ -68,11 +69,11 @@ export default function ChangePassword() {
                 }, 1000);
             } else {
                 setloading(false)
-                toast.error(data.data.message)
+                toast.error(data.message || data)
             }
-        } catch (err) {
+        } catch (err:any) {
             setloading(false)
-            toast.error('Paswords reset failed')
+            toast.error(err?.response?.data?.message || err?.message || err)
         }
     };
 

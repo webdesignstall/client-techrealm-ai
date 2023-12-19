@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { HandleRequest } from '@/helper/handleRequest';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
+import { Toaster, toast } from 'sonner';
 
 
 
@@ -27,10 +28,15 @@ export default function ProjectList() {
             } else {
                 const ids = localStorage.getItem("projectIds");
                 const data = await HandleRequest('get', `/projects-byids/${ids}`)
-                setTimeout(() => {
-                    setData(data.data)
-                    setloading(false)
-                }, 1000);
+
+                if (data.success === true) {
+                    setTimeout(() => {
+                        setData(data.data)
+                        setloading(false)
+                    }, 1000);
+                } else {
+                    toast.warning(data)
+                }
             }
         } catch (err) {
             console.log(err)
@@ -43,6 +49,7 @@ export default function ProjectList() {
 
     return (
         <div className='max-w-7xl m-auto'>
+            <Toaster richColors />
             <div>
                 <div>
                     <div className='flex lg:flex-wrap justify-center lg:justify-start flex-col lg:flex-row items-center mx-6 lg:mx-0'>

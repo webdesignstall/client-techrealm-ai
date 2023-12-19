@@ -2,7 +2,7 @@
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import {
     Form,
     FormControl,
@@ -13,12 +13,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { OTPverification, PasswordForget } from "@/api/userLoginApi";
 import React from "react";
 import { Toaster, toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
+import { HandleRequest } from "@/helper/handleRequest";
 
 
 const formSchema = z
@@ -41,8 +40,7 @@ export default function Verification() {
         try {
             setloading(true)
             const numericOTP = parseInt(values.otp, 10); // Convert the OTP string to a number
-            const data = await OTPverification(numericOTP)
-            console.log(data)
+            const data = await HandleRequest('get', `/otp/${localStorage.getItem('otpEmail')}/${numericOTP}`)
             if (data.success === true) {
                 toast.success(data.message)
                 setTimeout(() => {
@@ -51,12 +49,12 @@ export default function Verification() {
                 }, 1000);
             } else {
                 setloading(false)
-                toast.error(data.data.message || data.data)
+                toast.error(data.message || data)
             }
 
-        } catch (err) {
+        } catch (err:any) {
             setloading(false)
-            toast.error('OTP verification Failed')
+            toast.error(err?.response?.data?.message || err?.message || err)
         }
     };
 
