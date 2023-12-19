@@ -1,32 +1,16 @@
-import axiosInstance from "@/utilities/axiosInstance";
-import { message } from "antd";
+import axiosInstance from '@/helper/axiosInstance'
 
-const handleRequest = async (method, url, body, header) => {
+export const HandleRequest = async (method, url, values) => {
   try {
-    if (body) {
-      const { data } = await axiosInstance[method](url, body);
-      data?.message && message?.success(data?.message);
-      return data;
-    } else if (body && header) {
-      const { data } = await axiosInstance[method](url, body, {
-        header: header,
-      });
-      data?.message && message?.success(data?.message);
-      return data;
+    if (!values) {
+      const { data } = await axiosInstance[method](url)
+      return data
     } else {
-      const { data } = await axiosInstance[method](url);
-      data?.message && message?.success(data?.message);
-      return data;
+      const { data } = await axiosInstance[method](url, values)
+      return data
     }
-  } catch (e) {
 
-    const errors = e?.response?.data?.errorMessages;
-    errors?.map((error) => message?.error(error?.message));
-    return {
-      success: false,
-      data: null
-    };
+  } catch (err) {
+    return err
   }
-};
-
-export default handleRequest;
+}

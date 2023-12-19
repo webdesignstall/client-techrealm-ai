@@ -18,6 +18,7 @@ import { PasswordForget } from "@/api/userLoginApi";
 import React from "react";
 import { Toaster, toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { HandleRequest } from "@/helper/handleRequest";
 
 
 const formSchema = z
@@ -41,8 +42,10 @@ export default function ForgetPassword() {
     const handleSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
             setloading(true)
-            const data = await PasswordForget(values)
+            const data = await HandleRequest("get", `/resend-otp/${values.email}`, values)
+            console.log(data)
             if (data.success === true) {
+                localStorage.setItem("otpEmail", values?.email);
                 toast.success(data.message)
                 setTimeout(() => {
                     setloading(false)
@@ -50,12 +53,12 @@ export default function ForgetPassword() {
                 }, 1000);
             } else {
                 setloading(false)
-                toast.error(data.data.message || data.data)
+                toast.error(data?.response?.data?.message || data.message)
             }
 
-        } catch (err) {
+        } catch (err: any) {
             setloading(false)
-            toast.error('OTP sent Failed')
+            toast.error(err?.response?.data?.message)
         }
     };
 

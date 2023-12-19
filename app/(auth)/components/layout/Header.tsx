@@ -20,14 +20,16 @@ export default function Header() {
                         </Link>
                     </h1>
                 </div>
-                <div className="space-x-4">
+                <div className="space-x-4 flex">
                     <Link href='/login'>
                         <Button className='font-semibold' variant='ghost'>Login</Button>
                     </Link>
                     <Link href='/sign-up'>
                         <Button className='font-semibold'>Sign Up</Button>
                     </Link>
-                    <Mode />
+                    <div>
+                        <Mode />
+                    </div>
                 </div>
             </div>
         </div>
