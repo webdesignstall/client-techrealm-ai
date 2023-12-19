@@ -1,33 +1,37 @@
 "use client"
 import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { PlusCircle } from 'lucide-react';
-import Project from '../components/Task/Project';
-import { ProjectList } from '@/api/projectApi';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
 import { HandleRequest } from '@/helper/handleRequest';
-import { store } from '@/redux/store';
-import { setToken } from '@/redux/slice/AuthSlice';
+import { useSelector } from 'react-redux';
+import { useRouter } from 'next/navigation';
 
 
-export default function Dashboard() {
+
+export default function ProjectList() {
 
     const [data, setData] = React.useState<any>([{}])
     const [loading, setloading] = React.useState(true)
+    const router = useRouter()
+    const { token } = useSelector((state: any) => state.auth);
 
     const ProjectDetails = async () => {
         try {
-            const data = await HandleRequest('get', '/projects')
-            setTimeout(() => {
-                setData(data.data)
-                setloading(false)
-            }, 1000);
-            setTimeout(() => {
-                setData(data.data)
-                setloading(false)
-            }, 1000);
+            if (token) {
+                const data = await HandleRequest('get', '/projects')
+                setTimeout(() => {
+                    setData(data.data)
+                    setloading(false)
+                }, 1000);
+            } else {
+                const ids = localStorage.getItem("projectIds");
+                const data = await HandleRequest('get', `/projects-byids/${ids}`)
+                setTimeout(() => {
+                    setData(data.data)
+                    setloading(false)
+                }, 1000);
+            }
         } catch (err) {
             console.log(err)
         }
@@ -40,11 +44,6 @@ export default function Dashboard() {
     return (
         <div className='max-w-7xl m-auto'>
             <div>
-                <div className='flex justify-end items-end py-4'>
-                    <Link href='/project'>
-                        <Button>Add Project</Button>
-                    </Link>
-                </div>
                 <div>
                     <div className='flex lg:flex-wrap justify-center lg:justify-start flex-col lg:flex-row items-center mx-6 lg:mx-0'>
 
@@ -60,17 +59,15 @@ export default function Dashboard() {
                                                 <Skeleton className="w-[300px] h-[20px] rounded-full" />
                                             </CardHeader>
                                             :
-                                            <Link href={`/dashboard/${item.link}`}>
-                                                <CardHeader className='overflow-hidden '>
-                                                    <CardTitle className='py-2 capitalize text-gray-500 dark:text-white'>{item?.projectName}</CardTitle>
-                                                    <CardContent className='p-0 text-orange-700 dark:text-orange-300'>
-                                                        {item.prompt}
-                                                    </CardContent>
-                                                    <CardContent className='p-0 text-gray-800 dark:text-gray-200'>
-                                                        {item?.projectType}
-                                                    </CardContent>
-                                                </CardHeader>
-                                            </Link>
+                                            <CardHeader onClick={() => token ? router.push(`dashboard/${item.link}`) : router.push(`/project/${item.link}`)} className='overflow-hidden '>
+                                                <CardTitle className='py-2 capitalize text-gray-500 dark:text-white'>{item?.projectName}</CardTitle>
+                                                <CardContent className='p-0 text-orange-700 dark:text-orange-300'>
+                                                    {item.prompt}
+                                                </CardContent>
+                                                <CardContent className='p-0 text-gray-800 dark:text-gray-200'>
+                                                    {item?.projectType}
+                                                </CardContent>
+                                            </CardHeader>
                                     }
                                 </Card>
                             ))

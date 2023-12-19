@@ -20,6 +20,7 @@ import Link from "next/link";
 import { useRouter } from 'next/navigation'
 import { userSignup } from "@/api/userLoginApi";
 import { Toaster, toast } from "sonner";
+import { HandleRequest } from "@/helper/handleRequest";
 
 const formSchema = z
     .object({
@@ -61,18 +62,23 @@ export default function Signup() {
 
 
     const handleSubmit = async (values: z.infer<typeof formSchema>) => {
-        setloading(true)
-        const data = await userSignup(values)
-        if (data === true) {
-            toast.success('Account create Successfully')
-            form.reset()
-            setTimeout(() => {
+        try {
+            setloading(true)
+            const data = await HandleRequest("post", '/register', values)
+            if (data.success === true) {
+                toast.success(data.message)
+                form.reset()
+                setTimeout(() => {
+                    setloading(false)
+                    router.push('/login')
+                }, 1000);
+            } else {
+                console.log(data)
                 setloading(false)
-                router.push('/login')
-            }, 1000);
-        } else {
-            setloading(false)
-            toast.error('Account create Failed !')
+                toast.error(data?.response?.data?.message || data?.message)
+            }
+        } catch (err: any) {
+            toast.error(err?.response?.data?.message)
         }
     };
 

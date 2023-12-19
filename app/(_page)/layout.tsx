@@ -6,6 +6,8 @@ import Header from './components/layout/Header'
 import React from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { AuthCheck } from '@/api/userLoginApi'
+import { store } from '@/redux/store'
+import { clearToken } from '@/redux/slice/AuthSlice'
 
 
 
@@ -29,11 +31,11 @@ export default function DashboardLayout({
                 console.log(data)
             }
             else if (data.response.data.success === false) {
-                localStorage.clear()
+                store.dispatch(clearToken())
                 window.location.href = "/";
             }
         } catch (err) {
-            localStorage.clear()
+            store.dispatch(clearToken())
             window.location.href = "/";
         }
     }

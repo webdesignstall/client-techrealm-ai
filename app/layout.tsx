@@ -5,7 +5,6 @@ import { cn } from '@/lib/utils'
 import { Inter as FontSans } from "next/font/google"
 import { Providers } from "./Provider";
 import { ThemeProvider } from "@/components/theme-provider";
-import LoadingBar from '@/components/Loading'
 
 
 export const fontSans = FontSans({
@@ -33,7 +32,6 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-           <LoadingBar />
             {children}
           </ThemeProvider>
         </Providers>
