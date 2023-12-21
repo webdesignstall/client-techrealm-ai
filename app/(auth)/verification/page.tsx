@@ -39,9 +39,10 @@ export default function Verification() {
     const handleSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
             setloading(true)
-            const numericOTP = parseInt(values.otp, 10); // Convert the OTP string to a number
+            const numericOTP:any = parseInt(values.otp, 10); // Convert the OTP string to a number
             const data = await HandleRequest('get', `/otp/${localStorage.getItem('otpEmail')}/${numericOTP}`)
             if (data.success === true) {
+                localStorage.setItem("verifyOtp", numericOTP);
                 toast.success(data.message)
                 setTimeout(() => {
                     setloading(false)
