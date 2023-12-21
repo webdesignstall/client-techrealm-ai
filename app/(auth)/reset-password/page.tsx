@@ -52,7 +52,7 @@ export default function ChangePassword() {
         try {
             setloading(true)
 
-            const data = await HandleRequest('post', '/passwords', {
+            const data = await HandleRequest('patch', '/passwords', {
                 password: values.password,
                 confirmPassword: values.confirmPassword,
                 email: localStorage.getItem("otpEmail"),

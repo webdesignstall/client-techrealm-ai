@@ -39,7 +39,6 @@ export default function Dashboard() {
             const data = await HandleRequest('patch', '/projects-update', { userId: token.id, ids: JSON.parse(values) })
             if (data.success === true) {
                 localStorage.removeItem('projectIds');
-                console.log('Project updated successfully')
             }
         } catch (err) {
             console.log(err)
