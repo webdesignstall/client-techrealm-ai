@@ -27,7 +27,7 @@ export default function DashboardLayout({
     const AuthVerify = async () => {
         try {
             const data = await HandleRequest("get", '/auth/auth-check')
-             if (data.response.data.success === false) {
+            if (data.success === false) {
                 store.dispatch(clearToken())
                 window.location.href = "/";
             }
