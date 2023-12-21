@@ -6,6 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { HandleRequest } from '@/helper/handleRequest';
+import { useSelector } from 'react-redux';
 
 
 export default function Dashboard() {
@@ -13,6 +14,8 @@ export default function Dashboard() {
 
     const [data, setData] = React.useState<any>([{}])
     const [loading, setloading] = React.useState(true)
+
+    const { token } = useSelector((state: any) => state.auth);
 
     const ProjectDetails = async () => {
         try {
@@ -30,7 +33,23 @@ export default function Dashboard() {
         }
     }
 
+    const ProjectUpdate = async () => {
+        try {
+            const values: any = localStorage.getItem('projectIds')
+            const data = await HandleRequest('patch', '/projects-update', { userId: token.id, ids: JSON.parse(values) })
+            if (data.success === true) {
+                localStorage.removeItem('projectIds');
+                console.log('Project updated successfully')
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+
+
     React.useEffect(() => {
+        ProjectUpdate()
         ProjectDetails()
     }, [])
 
