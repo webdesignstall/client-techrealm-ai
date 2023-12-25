@@ -22,6 +22,14 @@ export default function SingleProject({ params }: any) {
   const SingleProjectView = async () => {
     try {
       const data = await HandleRequest('get', `/projects/${param.link}`)
+      const projectId: any = localStorage.getItem('projectIds')
+      const index = projectId.indexOf(data.data._id);
+      if (index === -1) {
+        const storedIds: string[] = JSON.parse(localStorage.getItem("projectIds") ?? "[]") || [];
+        storedIds.push(data?.data?._id);
+        localStorage.setItem("projectIds", JSON.stringify(storedIds));
+      }
+
       setTimeout(() => {
         setData(data.data)
         setloading(false)
