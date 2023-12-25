@@ -35,12 +35,11 @@ export default function ProjectList() {
                         setloading(false)
                     }, 1000);
                 } else {
-                    console.log(data)
                     toast.warning(data.message || data)
                 }
             }
-        } catch (err) {
-            console.log(err)
+        } catch (err:any) {
+            toast.error(err?.response?.data?.message || err?.message || err)
         }
     }
 
